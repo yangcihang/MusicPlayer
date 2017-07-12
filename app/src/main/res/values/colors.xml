@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="primary">#303F9F</color>
+    <color name="primary_dark">#1A237E</color>
+    <color name="primary_light">#9FA8DA</color>
+    <color name="menu">#3f000000</color>
+    <color name="menu_title">#51000000</color>
+    <color name="bottom_color">#00000000</color>
+
+    <color name="accent">#1A237E</color>
+    <color name="primary_text">#45485B</color>
+    <color name="secondary_text">#9B9B9B</color>
+    <color name="ternary_text">#BCBEC8</color>
+
+    <color name="divider">#9FA8DA</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+</resources>

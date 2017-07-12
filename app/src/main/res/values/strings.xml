@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MusicPlayer</string>
+    <string name="text_menu_scan_music">扫描歌曲</string>
+    <string name="text_menu_play_mode">播放方式</string>
+    <string name="text_menu_background">换背景</string>
+    <string name="text_menu_sleep">睡眠</string>
+    <string name="text_menu_setting">设置</string>
+    <string name="text_menu_exit">退出</string>
+</resources>
