@@ -2,7 +2,10 @@ package com.example.yang.musicplayer;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.os.Bundle;
+
+import com.example.yang.musicplayer.service.MusicPlayerService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +27,8 @@ public class MusicPlayerApplication extends Application {
         super.onCreate();
         instance = this;
         registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
+        // TODO: 17/7/13 加入网络找音乐的功能 
+        startService(new Intent(this, MusicPlayerService.class)); //启动全局服务（音乐播放服务）
     }
 
     /**
@@ -104,6 +109,7 @@ public class MusicPlayerApplication extends Application {
         }
     }
 
+    // TODO: 17/7/14 关闭服务和广播 
     public void exitApp() {
         clearAllActivity();
     }

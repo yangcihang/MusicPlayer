@@ -6,4 +6,5 @@
     <string name="text_menu_sleep">睡眠</string>
     <string name="text_menu_setting">设置</string>
     <string name="text_menu_exit">退出</string>
+    <string name="toast_logical_error">逻辑不可达</string>
 </resources>

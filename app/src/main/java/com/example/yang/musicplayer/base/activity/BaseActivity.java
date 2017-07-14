@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.yang.musicplayer.base.fragment.BaseFragment;
+import com.example.yang.musicplayer.constant.Constant;
 
 import butterknife.ButterKnife;
 
@@ -19,7 +20,7 @@ import butterknife.ButterKnife;
  * email yangcihang@hrsoft.net
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements Constant{
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -6,6 +6,7 @@ import android.widget.Toast;
 import com.example.yang.musicplayer.MusicPlayerApplication;
 
 /**
+ * Toast工具类
  * @author YangCihang
  * @since 17/7/12.
  * email yangcihang@hrsoft.net
