@@ -30,4 +30,6 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.5.0'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.0'
+    //rxjava
+    compile 'io.reactivex.rxjava2:rxjava:2.0.5'
 }

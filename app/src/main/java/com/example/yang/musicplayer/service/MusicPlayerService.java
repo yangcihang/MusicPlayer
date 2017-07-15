@@ -15,25 +15,32 @@ import android.widget.RemoteViews;
 
 import com.example.yang.musicplayer.MusicPlayerApplication;
 import com.example.yang.musicplayer.R;
+import com.example.yang.musicplayer.base.model.MusicInfo;
 import com.example.yang.musicplayer.constant.Constant;
 import com.example.yang.musicplayer.home.activity.MainActivity;
 import com.example.yang.musicplayer.utils.ToastUtil;
 
+import java.util.List;
+
 import static android.app.Notification.FLAG_ONGOING_EVENT;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 /**
  * 音乐播放的service
+ *
  * @author YangCihang
  * @since 17/7/12.
  * email yangcihang@hrsoft.net
  */
 
-public class MusicPlayerService extends Service implements Constant{
+public class MusicPlayerService extends Service implements Constant {
 
     private String path; //路径
     private MusicBroadcast musicBroadcast; //广播接收器
-    private MusicBinder musicBinder;
+    private MusicBinder musicBinder; //binder
+    private Notification notification;
     private RemoteViews remoteView; //加载notification的view
     private NotificationManager notificationManager; //通知栏管理
     private boolean isNotificaton = false;
@@ -47,8 +54,9 @@ public class MusicPlayerService extends Service implements Constant{
 
     @Override
     public void onCreate() {
+        musicBinder = new MusicBinder();
         super.onCreate();
-        musicController = new MusicController();
+        musicController = MusicPlayerApplication.getInstance().getMusicController();
         initBroadcast();
     }
 
@@ -63,7 +71,7 @@ public class MusicPlayerService extends Service implements Constant{
     private void initBroadcast() {
         musicBroadcast = new MusicBroadcast();
         IntentFilter intentFilter = new IntentFilter(BROADCAST_NAME);
-        registerReceiver(musicBroadcast,intentFilter);
+        registerReceiver(musicBroadcast, intentFilter);
     }
 
     /**
@@ -72,21 +80,21 @@ public class MusicPlayerService extends Service implements Constant{
     private void initNotification() {
         remoteView = new RemoteViews(this.getPackageName(), R.layout.view_music_player_notification);
         Intent intent = new Intent(BROADCAST_NAME);
-        intent.putExtra(KEY_FLAG,FLAG_NEXT);
-        PendingIntent nextPendingIntent = PendingIntent.getBroadcast(this,FLAG_NEXT,intent,FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(R.id.img_next,nextPendingIntent);
-        intent.putExtra(KEY_FLAG,FLAG_PRE);
-        PendingIntent prePendingIntent = PendingIntent.getBroadcast(this,FLAG_PRE,intent, FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(R.id.img_previous,prePendingIntent);
-        intent.putExtra(KEY_FLAG,FLAG_PAUSE);
-        PendingIntent pausePendingIntent = PendingIntent.getBroadcast(this,FLAG_PAUSE,intent,FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(R.id.img_pause,pausePendingIntent);
-        intent.putExtra(KEY_FLAG,FLAG_PLAY);
-        PendingIntent playPendingIntent = PendingIntent.getBroadcast(this,FLAG_PLAY,intent,FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(R.id.img_play,playPendingIntent);
-        intent.putExtra(KEY_FLAG,FLAG_CANCEL);
-        PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(this,FLAG_CANCEL,intent,FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(R.id.img_cancel,cancelPendingIntent);
+        intent.putExtra(KEY_FLAG, FLAG_NEXT);
+        PendingIntent nextPendingIntent = PendingIntent.getBroadcast(this, FLAG_NEXT, intent, FLAG_UPDATE_CURRENT);
+        remoteView.setOnClickPendingIntent(R.id.img_next, nextPendingIntent);
+        intent.putExtra(KEY_FLAG, FLAG_PRE);
+        PendingIntent prePendingIntent = PendingIntent.getBroadcast(this, FLAG_PRE, intent, FLAG_UPDATE_CURRENT);
+        remoteView.setOnClickPendingIntent(R.id.img_previous, prePendingIntent);
+        intent.putExtra(KEY_FLAG, FLAG_PAUSE);
+        PendingIntent pausePendingIntent = PendingIntent.getBroadcast(this, FLAG_PAUSE, intent, FLAG_UPDATE_CURRENT);
+        remoteView.setOnClickPendingIntent(R.id.img_pause, pausePendingIntent);
+        intent.putExtra(KEY_FLAG, FLAG_PLAY);
+        PendingIntent playPendingIntent = PendingIntent.getBroadcast(this, FLAG_PLAY, intent, FLAG_UPDATE_CURRENT);
+        remoteView.setOnClickPendingIntent(R.id.img_play, playPendingIntent);
+        intent.putExtra(KEY_FLAG, FLAG_CANCEL);
+        PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(this, FLAG_CANCEL, intent, FLAG_UPDATE_CURRENT);
+        remoteView.setOnClickPendingIntent(R.id.img_cancel, cancelPendingIntent);
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         setNotificationRemoteView();
     }
@@ -95,18 +103,36 @@ public class MusicPlayerService extends Service implements Constant{
      * 设置Notification的View
      */
     public void setNotificationRemoteView() {
-        remoteView.setTextViewText(R.id.txt_title,"这是title");
-        remoteView.setTextViewText(R.id.txt_author,"这是author");
-        remoteView.setImageViewResource(R.id.img_head,R.drawable.img_album_background);
-        Notification notification = new Notification();
+        remoteView.setTextViewText(R.id.txt_title, "这是title");
+        remoteView.setTextViewText(R.id.txt_author, "这是author");
+        remoteView.setImageViewResource(R.id.img_head, R.drawable.img_album_background);
+        notification = new Notification();
         // TODO: 17/7/14 应该到播放音乐的地方，而不是主页，暂时先这么写
         Intent intentToMain = new Intent(MusicPlayerApplication.getInstance(), MainActivity.class);
-        notification.contentIntent = PendingIntent.getActivity(this,0,intentToMain,0);
+        notification.contentIntent = PendingIntent.getActivity(this, 0, intentToMain, 0);
         notification.contentView = remoteView;
         notification.icon = R.drawable.icon;
         notification.tickerText = "123";
         notification.flags |= FLAG_ONGOING_EVENT; //设置不能被点击删除
-        startForeground(NOTIFICATION_ID,notification);
+        startForeground(NOTIFICATION_ID, notification);
+    }
+
+    /**
+     * 更新通知
+     */
+    private void changedNotificationState(boolean isPlaying) {
+        // TODO: 17/7/15 更新音乐信息 
+        if (isNotificaton) {
+            if (!isPlaying) {
+                remoteView.setViewVisibility(R.id.img_play, VISIBLE);
+                remoteView.setViewVisibility(R.id.img_pause, GONE);
+                notificationManager.notify(NOTIFICATION_ID, notification);
+            } else {
+                remoteView.setViewVisibility(R.id.img_play, GONE);
+                remoteView.setViewVisibility(R.id.img_pause, VISIBLE);
+                notificationManager.notify(NOTIFICATION_ID, notification);
+            }
+        }
     }
 
     /**
@@ -126,27 +152,37 @@ public class MusicPlayerService extends Service implements Constant{
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            // TODO: 17/7/15 还有其他地方的player
             if (!isNotificaton) {
                 isNotificaton = true;
                 initNotification();
             }
-            int flag = intent.getIntExtra(KEY_FLAG,0);
+            int flag = intent.getIntExtra(KEY_FLAG, 0);
             switch (flag) {
                 case FLAG_PLAY:
                     ToastUtil.showToast("点击了播放");
+                    changedNotificationState(true);
+                    musicBinder.onStateChanged(true);
                     break;
                 case FLAG_NEXT:
                     ToastUtil.showToast("点击了下一首");
+                    changedNotificationState(true);
+                    musicBinder.onStateChanged(true);
                     break;
                 case FLAG_CANCEL:
                     ToastUtil.showToast("点击了取消");
                     cancelNotification();
+                    musicBinder.onStateChanged(false);
                     break;
                 case FLAG_PRE:
                     ToastUtil.showToast("点击了前一首");
+                    changedNotificationState(true);
+                    musicBinder.onStateChanged(true);
                     break;
                 case FLAG_PAUSE:
                     ToastUtil.showToast("点击了暂停");
+                    changedNotificationState(false);
+                    musicBinder.onStateChanged(false);
                     break;
                 default:
                     ToastUtil.showToast(R.string.toast_logical_error);
@@ -156,7 +192,20 @@ public class MusicPlayerService extends Service implements Constant{
         }
     }
 
-    private class MusicBinder extends Binder {
+    /**
+     * 自定义的binder
+     */
+    public class MusicBinder extends Binder {
+        private OnPlayerStateChanged playerStateChangedListener;
 
+        public void setPlayerStateChangedListener(OnPlayerStateChanged playerStateChangedListener) {
+            this.playerStateChangedListener = playerStateChangedListener;
+        }
+
+        public void onStateChanged(boolean isPlaying) {
+            if (playerStateChangedListener != null) {
+                playerStateChangedListener.changeState(isPlaying);
+            }
+        }
     }
 }

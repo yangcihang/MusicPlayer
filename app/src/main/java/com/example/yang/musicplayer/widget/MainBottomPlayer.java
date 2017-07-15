@@ -22,54 +22,64 @@ import butterknife.OnClick;
  * email yangcihang@hrsoft.net
  */
 
-public class BottomPlayer extends RelativeLayout implements Constant{
+public class MainBottomPlayer extends RelativeLayout implements Constant {
 
     @BindView(R.id.img_head_icon)
     ImageView headImg;
-    @BindView(R.id.btn_play2)
+    @BindView(R.id.btn_play)
     ImageButton playBtn;
-    @BindView(R.id.btn_pause2)
+    @BindView(R.id.btn_pause)
     ImageButton pauseBtn;
-    @BindView(R.id.btn_menu2)
+    @BindView(R.id.btn_menu)
     ImageButton menuBtn;
-    @BindView(R.id.btn_playNext2)
+    @BindView(R.id.btn_playNext)
     ImageButton nextBtn;
     private Context mcontext;
     private Intent intent;
 
-    public BottomPlayer(Context context, AttributeSet attrs) {
+    public MainBottomPlayer(Context context, AttributeSet attrs) {
         super(context, attrs);
         mcontext = context;
-        LayoutInflater.from(context).inflate(R.layout.view_bottom_player,this);
+        LayoutInflater.from(context).inflate(R.layout.view_bottom_player, this);
         ButterKnife.bind(this);
         intent = new Intent(BROADCAST_NAME);
     }
 
-    @OnClick(R.id.btn_play2)
+    @OnClick(R.id.btn_play)
     void onPlay() {
-        intent.putExtra(KEY_FLAG,FLAG_PLAY);
+        intent.putExtra(KEY_FLAG, FLAG_PLAY);
         mcontext.sendBroadcast(intent);
     }
 
-    @OnClick(R.id.btn_pause2)
+    @OnClick(R.id.btn_pause)
     void onPause() {
-        intent.putExtra(KEY_FLAG,FLAG_PAUSE);
+        intent.putExtra(KEY_FLAG, FLAG_PAUSE);
         mcontext.sendBroadcast(intent);
     }
 
-    @OnClick(R.id.btn_playNext2)
+    @OnClick(R.id.btn_playNext)
     void onNext() {
-        intent.putExtra(KEY_FLAG,FLAG_NEXT);
+        intent.putExtra(KEY_FLAG, FLAG_NEXT);
         mcontext.sendBroadcast(intent);
     }
 
     @OnClick(R.id.img_head_icon)
     void onIconClicked() {
+
     }
 
-    @OnClick(R.id.btn_menu2)
+    @OnClick(R.id.btn_menu)
     void onMenuClicked() {
 
     }
 
+    public void onStateChanged(boolean isPlaying) {
+        if (isPlaying) {
+            pauseBtn.setVisibility(VISIBLE);
+            playBtn.setVisibility(GONE);
+        } else {
+            pauseBtn.setVisibility(GONE);
+            playBtn.setVisibility(VISIBLE);
+        }
+    }
 }

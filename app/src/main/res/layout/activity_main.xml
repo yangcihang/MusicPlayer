@@ -5,16 +5,24 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg">
 
-    <FrameLayout
-        android:id="@+id/fragment_home"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.example.yang.musicplayer.widget.BottomPlayer
+        <FrameLayout
+            android:id="@+id/frame_home"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </com.example.yang.musicplayer.widget.BottomPlayer>
-    </FrameLayout>
+            android:layout_height="match_parent"
+            android:layout_above="@+id/layout_bottom">
+        </FrameLayout>
+
+        <com.example.yang.musicplayer.widget.MainBottomPlayer
+            android:id="@+id/layout_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_layout_height"
+            android:layout_alignParentBottom="true">
+        </com.example.yang.musicplayer.widget.MainBottomPlayer>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="180dp"
@@ -24,65 +32,65 @@
         android:orientation="vertical">
 
         <TextView
-            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="@dimen/menu_item_top"
-            android:gravity="center"
-            android:textSize="24sp"
+            android:layout_marginTop="5dp"
             android:background="@color/menu_title"
+            android:gravity="center"
             android:text="@string/app_name"
-            android:textColor="@color/ternary_text"/>
+            android:textColor="@color/ternary_text"
+            android:textSize="24sp"/>
 
         <TextView
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:textSize="@dimen/menu_item_text_size"
             android:layout_height="@dimen/menu_item_top"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="@string/text_menu_scan_music"
-            android:textColor="@color/ternary_text"/>
+            android:textColor="@color/ternary_text"
+            android:textSize="@dimen/menu_item_text_size"/>
 
         <TextView
             android:layout_width="match_parent"
-            android:textSize="@dimen/menu_item_text_size"
             android:layout_height="@dimen/menu_item_top"
             android:gravity="center"
             android:text="@string/text_menu_play_mode"
-            android:textColor="@color/ternary_text"/>
+            android:textColor="@color/ternary_text"
+            android:textSize="@dimen/menu_item_text_size"/>
 
         <TextView
-            android:textSize="@dimen/menu_item_text_size"
             android:layout_width="match_parent"
             android:layout_height="@dimen/menu_item_top"
             android:gravity="center"
             android:text="@string/text_menu_background"
-            android:textColor="@color/ternary_text"/>
+            android:textColor="@color/ternary_text"
+            android:textSize="@dimen/menu_item_text_size"/>
 
         <TextView
-            android:textSize="@dimen/menu_item_text_size"
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="@dimen/menu_item_top"
             android:gravity="center"
             android:text="@string/text_menu_sleep"
-            android:textColor="@color/ternary_text"/>
+            android:textColor="@color/ternary_text"
+            android:textSize="@dimen/menu_item_text_size"/>
 
         <TextView
-            android:textSize="@dimen/menu_item_text_size"
             android:layout_width="match_parent"
             android:layout_height="@dimen/menu_item_top"
             android:gravity="center"
             android:text="@string/text_menu_setting"
-            android:textColor="@color/ternary_text"/>
+            android:textColor="@color/ternary_text"
+            android:textSize="@dimen/menu_item_text_size"/>
 
         <TextView
             android:id="@+id/txt_exit_app"
-            android:textSize="@dimen/menu_item_text_size"
             android:layout_width="match_parent"
             android:layout_height="@dimen/menu_item_top"
             android:gravity="center"
             android:text="@string/text_menu_exit"
-            android:textColor="@color/ternary_text"/>
+            android:textColor="@color/ternary_text"
+            android:textSize="@dimen/menu_item_text_size"/>
     </LinearLayout>
 
 

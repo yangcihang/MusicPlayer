@@ -5,7 +5,9 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.yang.musicplayer.service.MusicController;
 import com.example.yang.musicplayer.service.MusicPlayerService;
+import com.example.yang.musicplayer.utils.permission.PermissionsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +23,18 @@ public class MusicPlayerApplication extends Application {
     private static MusicPlayerApplication instance;
     /** Activity栈 */
     private static List<Activity> activityList = new ArrayList<>();
+    /**
+     * 音乐全局管理
+     */
+    private MusicController musicController;
 
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
+        // TODO: 17/7/15 service启动位置再琢磨. 
+        startService(new Intent(MusicPlayerApplication.getInstance(), MusicPlayerService.class)); //启动全局服务（音乐播放服务）
         registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
-        // TODO: 17/7/13 加入网络找音乐的功能 
-        startService(new Intent(this, MusicPlayerService.class)); //启动全局服务（音乐播放服务）
     }
 
     /**
@@ -112,5 +118,15 @@ public class MusicPlayerApplication extends Application {
     // TODO: 17/7/14 关闭服务和广播 
     public void exitApp() {
         clearAllActivity();
+        stopService(new Intent(this, MusicPlayerService.class));
+    }
+
+    public MusicController getMusicController() {
+        return musicController;
+    }
+
+    public void initMusicController() {
+        // TODO: 17/7/15 controller逻辑再琢磨 
+        musicController = new MusicController();
     }
 }

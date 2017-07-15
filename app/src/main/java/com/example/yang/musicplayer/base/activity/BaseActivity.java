@@ -83,7 +83,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Constant
      * @param fragment fragment
      * @param bundle   传递的数据
      */
-    protected void replaceFragment(@IdRes int containerViewId, BaseFragment fragment, Bundle bundle) {
+    protected void replaceFragment(@IdRes int containerViewId, BaseFragment fragment, @Nullable Bundle bundle) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if (bundle != null) {
