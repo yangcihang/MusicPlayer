@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.yang.musicplayer.R;
+import com.example.yang.musicplayer.base.model.MusicInfo;
 import com.example.yang.musicplayer.constant.Constant;
 import com.example.yang.musicplayer.service.MusicPlayerService;
 import com.example.yang.musicplayer.utils.ToastUtil;
@@ -35,6 +37,10 @@ public class MainBottomPlayer extends RelativeLayout implements Constant {
     ImageButton menuBtn;
     @BindView(R.id.btn_playNext)
     ImageButton nextBtn;
+    @BindView(R.id.txt_music_name)
+    TextView musicNameTxt;
+    @BindView(R.id.txt_duration)
+    TextView durationTxt;
 
     private Context mcontext;
     private Intent intent;
@@ -84,5 +90,10 @@ public class MainBottomPlayer extends RelativeLayout implements Constant {
             pauseBtn.setVisibility(GONE);
             playBtn.setVisibility(VISIBLE);
         }
+    }
+
+    public void refreshView(MusicInfo musicInfo) {
+        musicNameTxt.setText(musicInfo.getTitle());
+        durationTxt.setText(String.valueOf(musicInfo.getDuration()));
     }
 }

@@ -1,5 +1,9 @@
 package com.example.yang.musicplayer.service;
 
+import com.example.yang.musicplayer.base.model.MusicInfo;
+
+import java.util.List;
+
 /**
  * @author YangCihang.
  * @since 2017/7/17 0017.
@@ -26,4 +30,8 @@ public interface MusicControllerInterface {
     void setMusicListPosition(int position);
 
     int getMusicListPosition();
+
+    MusicInfo getCurrentMusicInfo();
+
+    void reloadMusicList(List<MusicInfo> musicInfoList);
 }

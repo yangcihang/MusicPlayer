@@ -15,9 +15,12 @@ import android.widget.RemoteViews;
 
 import com.example.yang.musicplayer.MusicPlayerApplication;
 import com.example.yang.musicplayer.R;
+import com.example.yang.musicplayer.base.model.MusicInfo;
 import com.example.yang.musicplayer.constant.Constant;
 import com.example.yang.musicplayer.home.activity.MainActivity;
 import com.example.yang.musicplayer.utils.ToastUtil;
+
+import java.util.List;
 
 import static android.app.Notification.FLAG_ONGOING_EVENT;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
@@ -51,9 +54,23 @@ public class MusicPlayerService extends Service implements Constant {
 
     @Override
     public void onCreate() {
-        musicBinder = new MusicBinder();
         super.onCreate();
         musicController = new MusicController();
+        musicController.setOnPlayerStateChangedListener(new OnPlayerStateChanged() {
+            @Override
+            public void clickedChangePlayerState(boolean isPlaying) {
+                //nothing to do
+            }
+
+            @Override
+            public void switchChangeViewState(int currentPosition, MusicInfo musicInfo) {
+                musicBinder.onViewChanged(currentPosition, musicInfo);
+                remoteView.setTextViewText(R.id.txt_title, musicInfo.getTitle());
+                remoteView.setTextViewText(R.id.txt_author, musicInfo.getSinger());
+                notificationManager.notify(NOTIFICATION_ID, notification);
+            }
+        });
+        musicBinder = new MusicBinder();
         initBroadcast();
     }
 
@@ -189,6 +206,7 @@ public class MusicPlayerService extends Service implements Constant {
         musicController.onPause();
     }
 /* -----------------------------------------*/
+
     /**
      * 音乐接收器
      */
@@ -230,7 +248,6 @@ public class MusicPlayerService extends Service implements Constant {
      */
     public class MusicBinder extends Binder implements MusicControllerInterface {
         private OnPlayerStateChanged playerStateChangedListener;
-
         @Override
         public void onPlay(int pos) {
             MusicPlayerService.this.onPlay(pos);
@@ -281,6 +298,16 @@ public class MusicPlayerService extends Service implements Constant {
             return musicController.getMusicListPosition();
         }
 
+        @Override
+        public MusicInfo getCurrentMusicInfo() {
+            return musicController.getCurrentMusicInfo();
+        }
+
+        @Override
+        public void reloadMusicList(List<MusicInfo> musicInfoList) {
+            musicController.reloadMusicList(musicInfoList);
+        }
+
         /**
          * 设置状态监听器
          */
@@ -290,7 +317,13 @@ public class MusicPlayerService extends Service implements Constant {
 
         public void onStateChanged(boolean isPlaying) {
             if (playerStateChangedListener != null) {
-                playerStateChangedListener.changePlayerState(isPlaying);
+                playerStateChangedListener.clickedChangePlayerState(isPlaying);
+            }
+        }
+
+        private void onViewChanged(int pos, MusicInfo musicInfo) {
+            if (playerStateChangedListener != null) {
+                playerStateChangedListener.switchChangeViewState(pos, musicInfo);
             }
         }
     }

@@ -23,11 +23,11 @@ import java.util.List;
 public class MusicController implements MusicControllerInterface {
     private List<MusicInfo> musicInfoList; //音乐列表
     private MediaPlayer mediaPlayer; //播放器
-    private String path; //路径
     private int musicListPosition = 0;
     private boolean isPause = false; //pause的flag
+    private OnPlayerStateChanged onPlayerStateChangedListener;
 
-    public MusicController() {
+    MusicController() {
         musicInfoList = MusicUtils.getAllSongs(MusicPlayerApplication.getInstance());
         ToastUtil.showToast("数据初始化完成");
         mediaPlayer = new MediaPlayer();
@@ -53,6 +53,10 @@ public class MusicController implements MusicControllerInterface {
     @Override
     public void onPlay(int pos) {
         musicListPosition = pos;
+        //切换音乐时候执行
+        if (onPlayerStateChangedListener != null) {
+            onPlayerStateChangedListener.switchChangeViewState(pos, musicInfoList.get(pos));
+        }
         if (isPause) {
             onContinue();
         } else {
@@ -123,6 +127,11 @@ public class MusicController implements MusicControllerInterface {
     }
 
     @Override
+    public MusicInfo getCurrentMusicInfo() {
+        return musicInfoList.get(musicListPosition);
+    }
+
+    @Override
     public void setMusicListPosition(int musicListPosition) {
         this.musicListPosition = musicListPosition;
     }
@@ -144,7 +153,8 @@ public class MusicController implements MusicControllerInterface {
 
     }
 
-    public void reLoadMusicList(List<MusicInfo> musicInfoList) {
+    @Override
+    public void reloadMusicList(List<MusicInfo> musicInfoList) {
         this.musicInfoList = musicInfoList;
         onRelease();
     }
@@ -155,6 +165,13 @@ public class MusicController implements MusicControllerInterface {
             mediaPlayer.release();
             mediaPlayer = null;
         }
+    }
+
+    /**
+     * 状态改变的监听
+     */
+    public void setOnPlayerStateChangedListener(OnPlayerStateChanged onPlayerStateChangedListener) {
+        this.onPlayerStateChangedListener = onPlayerStateChangedListener;
     }
 }
 

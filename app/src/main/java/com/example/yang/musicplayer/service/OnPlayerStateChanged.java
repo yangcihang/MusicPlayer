@@ -1,5 +1,7 @@
 package com.example.yang.musicplayer.service;
 
+import com.example.yang.musicplayer.base.model.MusicInfo;
+
 /**
  * 音乐状态改变的监听
  * @author YangCihang
@@ -8,5 +10,8 @@ package com.example.yang.musicplayer.service;
  */
 
 public interface OnPlayerStateChanged {
-    void changePlayerState(boolean isPlaying);
+    void clickedChangePlayerState(boolean isPlaying);
+
+    // TODO: 2017/7/17 0017 当切换音乐时，改变状态
+    void switchChangeViewState(int currentPosition, MusicInfo musicInfo);
 }

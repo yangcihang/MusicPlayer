@@ -4,12 +4,12 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.widget.TextView;
 
 import com.example.yang.musicplayer.MusicPlayerApplication;
 import com.example.yang.musicplayer.R;
 import com.example.yang.musicplayer.base.activity.NoBarActivity;
+import com.example.yang.musicplayer.base.model.MusicInfo;
 import com.example.yang.musicplayer.home.fragment.HomeFragment;
 import com.example.yang.musicplayer.service.MusicPlayerService;
 import com.example.yang.musicplayer.service.OnPlayerStateChanged;
@@ -69,8 +69,13 @@ public class MainActivity extends NoBarActivity {
             bottomLayout.setMusicBinder(musicBinder);
             musicBinder.setPlayerStateChangedListener(new OnPlayerStateChanged() {
                 @Override
-                public void changePlayerState(boolean isPlaying) {
+                public void clickedChangePlayerState(boolean isPlaying) {
                     bottomLayout.onStateChanged(isPlaying);
+                }
+
+                @Override
+                public void switchChangeViewState(int currentPosition, MusicInfo musicInfo) {
+                    bottomLayout.refreshView(musicInfo);
                 }
             });
         }
