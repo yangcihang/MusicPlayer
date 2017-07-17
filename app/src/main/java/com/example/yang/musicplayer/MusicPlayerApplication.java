@@ -23,17 +23,12 @@ public class MusicPlayerApplication extends Application {
     private static MusicPlayerApplication instance;
     /** Activity栈 */
     private static List<Activity> activityList = new ArrayList<>();
-    /**
-     * 音乐全局管理
-     */
-    private MusicController musicController;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
-        // TODO: 17/7/15 service启动位置再琢磨. 
-        startService(new Intent(MusicPlayerApplication.getInstance(), MusicPlayerService.class)); //启动全局服务（音乐播放服务）
         registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
     }
 
@@ -121,12 +116,10 @@ public class MusicPlayerApplication extends Application {
         stopService(new Intent(this, MusicPlayerService.class));
     }
 
-    public MusicController getMusicController() {
-        return musicController;
-    }
-
-    public void initMusicController() {
-        // TODO: 17/7/15 controller逻辑再琢磨 
-        musicController = new MusicController();
+    /**
+     * 初始化服务
+     */
+    public void initService() {
+        startService(new Intent(MusicPlayerApplication.getInstance(), MusicPlayerService.class)); //启动全局服务（音乐播放服务）
     }
 }

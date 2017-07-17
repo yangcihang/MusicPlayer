@@ -8,9 +8,8 @@ package com.example.yang.musicplayer.constant;
 
 public interface Constant {
     String BROADCAST_NAME = "com.example.yang.musicplayer.broadcast";
-    String SERVICE_NAME = "com.example.yang.musicplayer.service.PLAYER_SERVICE";
-    int NOTIFICATION_ID = 0x1; //播放器通知的id
 
+    int NOTIFICATION_ID = 0x1; //播放器通知的id
     String KEY_FLAG = "flag";
     int FLAG_PAUSE = 0x2;
     int FLAG_NEXT = 0x3;

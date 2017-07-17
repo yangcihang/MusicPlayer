@@ -48,8 +48,8 @@ public class SplashActivity extends NoBarActivity {
             @Override
             public void accept(Boolean aBoolean) throws Exception {
                 if (aBoolean) {
-                    MusicPlayerApplication.getInstance().initMusicController();
                     long startTime = System.currentTimeMillis();
+                    MusicPlayerApplication.getInstance().initService();
                     goMainActivity(startTime);
                 } else {
                     ToastUtil.showToast("无法读取本地音乐资源");

@@ -15,12 +15,9 @@ import android.widget.RemoteViews;
 
 import com.example.yang.musicplayer.MusicPlayerApplication;
 import com.example.yang.musicplayer.R;
-import com.example.yang.musicplayer.base.model.MusicInfo;
 import com.example.yang.musicplayer.constant.Constant;
 import com.example.yang.musicplayer.home.activity.MainActivity;
 import com.example.yang.musicplayer.utils.ToastUtil;
-
-import java.util.List;
 
 import static android.app.Notification.FLAG_ONGOING_EVENT;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
@@ -56,13 +53,19 @@ public class MusicPlayerService extends Service implements Constant {
     public void onCreate() {
         musicBinder = new MusicBinder();
         super.onCreate();
-        musicController = MusicPlayerApplication.getInstance().getMusicController();
+        musicController = new MusicController();
         initBroadcast();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        musicController.onDestroy();
     }
 
     /**
@@ -145,6 +148,47 @@ public class MusicPlayerService extends Service implements Constant {
         isNotificaton = false;
     }
 
+    /*                 设置音乐播放状态            */
+    private void onPlay(int position) {
+        if (!isNotificaton) {
+            isNotificaton = true;
+            initNotification();
+        }
+        ToastUtil.showToast("点击了播放");
+        changedNotificationState(true);
+        musicBinder.onStateChanged(true);
+        musicController.onPlay(position);
+    }
+
+    private void onNext() {
+        if (!isNotificaton) {
+            isNotificaton = true;
+            initNotification();
+        }
+        ToastUtil.showToast("点击了下一首");
+        musicBinder.onStateChanged(true);
+        changedNotificationState(true);
+        musicController.onNext();
+    }
+
+    private void onPre() {
+        if (!isNotificaton) {
+            isNotificaton = true;
+            initNotification();
+        }
+        ToastUtil.showToast("点击了前一首");
+        musicBinder.onStateChanged(true);
+        changedNotificationState(true);
+        musicController.onPrePlay();
+    }
+
+    private void onPause() {
+        ToastUtil.showToast("点击了暂停");
+        changedNotificationState(false);
+        musicBinder.onStateChanged(false);
+        musicController.onPause();
+    }
+/* -----------------------------------------*/
     /**
      * 音乐接收器
      */
@@ -153,36 +197,25 @@ public class MusicPlayerService extends Service implements Constant {
         @Override
         public void onReceive(Context context, Intent intent) {
             // TODO: 17/7/15 还有其他地方的player
-            if (!isNotificaton) {
-                isNotificaton = true;
-                initNotification();
-            }
             int flag = intent.getIntExtra(KEY_FLAG, 0);
             switch (flag) {
                 case FLAG_PLAY:
-                    ToastUtil.showToast("点击了播放");
-                    changedNotificationState(true);
-                    musicBinder.onStateChanged(true);
+                    onPlay(musicController.getMusicListPosition());
                     break;
                 case FLAG_NEXT:
-                    ToastUtil.showToast("点击了下一首");
-                    changedNotificationState(true);
-                    musicBinder.onStateChanged(true);
+                    onNext();
                     break;
                 case FLAG_CANCEL:
                     ToastUtil.showToast("点击了取消");
                     cancelNotification();
-                    musicBinder.onStateChanged(false);
+                    musicBinder.onStop();
+                    musicController.onStop();
                     break;
                 case FLAG_PRE:
-                    ToastUtil.showToast("点击了前一首");
-                    changedNotificationState(true);
-                    musicBinder.onStateChanged(true);
+                    onPre();
                     break;
                 case FLAG_PAUSE:
-                    ToastUtil.showToast("点击了暂停");
-                    changedNotificationState(false);
-                    musicBinder.onStateChanged(false);
+                    onPause();
                     break;
                 default:
                     ToastUtil.showToast(R.string.toast_logical_error);
@@ -195,16 +228,69 @@ public class MusicPlayerService extends Service implements Constant {
     /**
      * 自定义的binder
      */
-    public class MusicBinder extends Binder {
+    public class MusicBinder extends Binder implements MusicControllerInterface {
         private OnPlayerStateChanged playerStateChangedListener;
 
+        @Override
+        public void onPlay(int pos) {
+            MusicPlayerService.this.onPlay(pos);
+        }
+
+        @Override
+        public void onPause() {
+            MusicPlayerService.this.onPause();
+        }
+
+        @Override
+        public void onLooping(boolean isLooping) {
+
+        }
+
+        @Override
+        public int getCurrentPosition() {
+            return 0;
+        }
+
+        @Override
+        public int getDuration() {
+            return 0;
+        }
+
+        @Override
+        public void onStop() {
+            onStateChanged(false);
+        }
+
+        @Override
+        public void onPrePlay() {
+            MusicPlayerService.this.onPre();
+        }
+
+        @Override
+        public void onNext() {
+            MusicPlayerService.this.onNext();
+        }
+
+        @Override
+        public void setMusicListPosition(int position) {
+
+        }
+
+        @Override
+        public int getMusicListPosition() {
+            return musicController.getMusicListPosition();
+        }
+
+        /**
+         * 设置状态监听器
+         */
         public void setPlayerStateChangedListener(OnPlayerStateChanged playerStateChangedListener) {
             this.playerStateChangedListener = playerStateChangedListener;
         }
 
         public void onStateChanged(boolean isPlaying) {
             if (playerStateChangedListener != null) {
-                playerStateChangedListener.changeState(isPlaying);
+                playerStateChangedListener.changePlayerState(isPlaying);
             }
         }
     }

@@ -66,9 +66,10 @@ public class MainActivity extends NoBarActivity {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             musicBinder = (MusicPlayerService.MusicBinder) iBinder;
+            bottomLayout.setMusicBinder(musicBinder);
             musicBinder.setPlayerStateChangedListener(new OnPlayerStateChanged() {
                 @Override
-                public void changeState(boolean isPlaying) {
+                public void changePlayerState(boolean isPlaying) {
                     bottomLayout.onStateChanged(isPlaying);
                 }
             });

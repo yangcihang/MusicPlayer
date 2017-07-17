@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 
 import com.example.yang.musicplayer.R;
 import com.example.yang.musicplayer.constant.Constant;
+import com.example.yang.musicplayer.service.MusicPlayerService;
 import com.example.yang.musicplayer.utils.ToastUtil;
 
 import butterknife.BindView;
@@ -34,9 +35,10 @@ public class MainBottomPlayer extends RelativeLayout implements Constant {
     ImageButton menuBtn;
     @BindView(R.id.btn_playNext)
     ImageButton nextBtn;
+
     private Context mcontext;
     private Intent intent;
-
+    private MusicPlayerService.MusicBinder musicBinder;
     public MainBottomPlayer(Context context, AttributeSet attrs) {
         super(context, attrs);
         mcontext = context;
@@ -45,22 +47,23 @@ public class MainBottomPlayer extends RelativeLayout implements Constant {
         intent = new Intent(BROADCAST_NAME);
     }
 
+    public void setMusicBinder(MusicPlayerService.MusicBinder musicBinder) {
+        this.musicBinder = musicBinder;
+    }
+
     @OnClick(R.id.btn_play)
     void onPlay() {
-        intent.putExtra(KEY_FLAG, FLAG_PLAY);
-        mcontext.sendBroadcast(intent);
+        musicBinder.onPlay(musicBinder.getMusicListPosition());
     }
 
     @OnClick(R.id.btn_pause)
     void onPause() {
-        intent.putExtra(KEY_FLAG, FLAG_PAUSE);
-        mcontext.sendBroadcast(intent);
+        musicBinder.onPause();
     }
 
     @OnClick(R.id.btn_playNext)
     void onNext() {
-        intent.putExtra(KEY_FLAG, FLAG_NEXT);
-        mcontext.sendBroadcast(intent);
+        musicBinder.onNext();
     }
 
     @OnClick(R.id.img_head_icon)
