@@ -58,13 +58,13 @@ public class MusicPlayerService extends Service implements Constant {
         musicController = new MusicController();
         musicController.setOnPlayerStateChangedListener(new OnPlayerStateChanged() {
             @Override
-            public void clickedChangePlayerState(boolean isPlaying) {
-                //nothing to do
+            public void changePlayerViewState(boolean isPlaying) {
+                changedViewState(isPlaying);
             }
 
             @Override
-            public void switchChangeViewState(int currentPosition, MusicInfo musicInfo) {
-                musicBinder.onViewChanged(currentPosition, musicInfo);
+            public void changeMusicInfoState(int currentPosition, MusicInfo musicInfo) {
+                musicBinder.onMusicInfoChanged(currentPosition, musicInfo);
                 remoteView.setTextViewText(R.id.txt_title, musicInfo.getTitle());
                 remoteView.setTextViewText(R.id.txt_author, musicInfo.getSinger());
                 notificationManager.notify(NOTIFICATION_ID, notification);
@@ -138,10 +138,9 @@ public class MusicPlayerService extends Service implements Constant {
     }
 
     /**
-     * 更新通知
+     * 更新视图
      */
-    private void changedNotificationState(boolean isPlaying) {
-        // TODO: 17/7/15 更新音乐信息 
+    private void changedViewState(boolean isPlaying) {
         if (isNotificaton) {
             if (!isPlaying) {
                 remoteView.setViewVisibility(R.id.img_play, VISIBLE);
@@ -153,6 +152,7 @@ public class MusicPlayerService extends Service implements Constant {
                 notificationManager.notify(NOTIFICATION_ID, notification);
             }
         }
+        musicBinder.onViewChanged(isPlaying);
     }
 
     /**
@@ -172,8 +172,6 @@ public class MusicPlayerService extends Service implements Constant {
             initNotification();
         }
         ToastUtil.showToast("点击了播放");
-        changedNotificationState(true);
-        musicBinder.onStateChanged(true);
         musicController.onPlay(position);
     }
 
@@ -183,8 +181,6 @@ public class MusicPlayerService extends Service implements Constant {
             initNotification();
         }
         ToastUtil.showToast("点击了下一首");
-        musicBinder.onStateChanged(true);
-        changedNotificationState(true);
         musicController.onNext();
     }
 
@@ -194,15 +190,11 @@ public class MusicPlayerService extends Service implements Constant {
             initNotification();
         }
         ToastUtil.showToast("点击了前一首");
-        musicBinder.onStateChanged(true);
-        changedNotificationState(true);
         musicController.onPrePlay();
     }
 
     private void onPause() {
         ToastUtil.showToast("点击了暂停");
-        changedNotificationState(false);
-        musicBinder.onStateChanged(false);
         musicController.onPause();
     }
 /* -----------------------------------------*/
@@ -226,7 +218,6 @@ public class MusicPlayerService extends Service implements Constant {
                 case FLAG_CANCEL:
                     ToastUtil.showToast("点击了取消");
                     cancelNotification();
-                    musicBinder.onStop();
                     musicController.onStop();
                     break;
                 case FLAG_PRE:
@@ -275,7 +266,6 @@ public class MusicPlayerService extends Service implements Constant {
 
         @Override
         public void onStop() {
-            onStateChanged(false);
         }
 
         @Override
@@ -315,15 +305,15 @@ public class MusicPlayerService extends Service implements Constant {
             this.playerStateChangedListener = playerStateChangedListener;
         }
 
-        public void onStateChanged(boolean isPlaying) {
+        public void onViewChanged(boolean isPlaying) {
             if (playerStateChangedListener != null) {
-                playerStateChangedListener.clickedChangePlayerState(isPlaying);
+                playerStateChangedListener.changePlayerViewState(isPlaying);
             }
         }
 
-        private void onViewChanged(int pos, MusicInfo musicInfo) {
+        private void onMusicInfoChanged(int pos, MusicInfo musicInfo) {
             if (playerStateChangedListener != null) {
-                playerStateChangedListener.switchChangeViewState(pos, musicInfo);
+                playerStateChangedListener.changeMusicInfoState(pos, musicInfo);
             }
         }
     }

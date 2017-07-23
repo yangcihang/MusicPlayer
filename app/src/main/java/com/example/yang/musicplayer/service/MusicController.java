@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 
 import com.example.yang.musicplayer.MusicPlayerApplication;
+import com.example.yang.musicplayer.R;
 import com.example.yang.musicplayer.base.model.MusicInfo;
 import com.example.yang.musicplayer.utils.MusicUtils;
 import com.example.yang.musicplayer.utils.ToastUtil;
@@ -23,7 +24,7 @@ import java.util.List;
 public class MusicController implements MusicControllerInterface {
     private List<MusicInfo> musicInfoList; //音乐列表
     private MediaPlayer mediaPlayer; //播放器
-    private int musicListPosition = 0;
+    private int musicListPosition = 0;//默认为0
     private boolean isPause = false; //pause的flag
     private OnPlayerStateChanged onPlayerStateChangedListener;
 
@@ -54,19 +55,25 @@ public class MusicController implements MusicControllerInterface {
     public void onPlay(int pos) {
         musicListPosition = pos;
         //切换音乐时候执行
-        if (onPlayerStateChangedListener != null) {
-            onPlayerStateChangedListener.switchChangeViewState(pos, musicInfoList.get(pos));
+        if (onPlayerStateChangedListener != null && !musicInfoList.isEmpty()) {
+            onPlayerStateChangedListener.changeMusicInfoState(pos, musicInfoList.get(pos));
+            onPlayerStateChangedListener.changePlayerViewState(true);
         }
         if (isPause) {
             onContinue();
         } else {
             try {
-                mediaPlayer.setDataSource(MusicPlayerApplication.getInstance(), Uri.parse(musicInfoList.get(pos).getFileUrl()));
-                mediaPlayer.prepare(); //异步准备
+                if (!musicInfoList.isEmpty()) {
+                    mediaPlayer.setDataSource(MusicPlayerApplication.getInstance(), Uri.parse(musicInfoList.get(pos).getFileUrl()));
+                    mediaPlayer.prepare(); //同步准备
+                    mediaPlayer.start();
+                } else {
+                    ToastUtil.showToast(R.string.toast_cannot_find_local_music);
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            mediaPlayer.start();
         }
     }
 
@@ -74,6 +81,7 @@ public class MusicController implements MusicControllerInterface {
     public void onPause() {
         isPause = true;
         mediaPlayer.pause();
+        onPlayerStateChangedListener.changePlayerViewState(false);
     }
 
 
@@ -100,6 +108,7 @@ public class MusicController implements MusicControllerInterface {
         isPause = false;
         mediaPlayer.stop();
         mediaPlayer.reset();
+        onPlayerStateChangedListener.changePlayerViewState(false);
         // TODO: 2017/7/17 0017 是否需要释放
     }
 

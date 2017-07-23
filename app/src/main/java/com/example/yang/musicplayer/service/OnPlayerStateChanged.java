@@ -10,8 +10,8 @@ import com.example.yang.musicplayer.base.model.MusicInfo;
  */
 
 public interface OnPlayerStateChanged {
-    void clickedChangePlayerState(boolean isPlaying);
+    void changePlayerViewState(boolean isPlaying);
 
     // TODO: 2017/7/17 0017 当切换音乐时，改变状态
-    void switchChangeViewState(int currentPosition, MusicInfo musicInfo);
+    void changeMusicInfoState(int currentPosition, MusicInfo musicInfo);
 }

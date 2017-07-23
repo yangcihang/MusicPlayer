@@ -69,12 +69,12 @@ public class MainActivity extends NoBarActivity {
             bottomLayout.setMusicBinder(musicBinder);
             musicBinder.setPlayerStateChangedListener(new OnPlayerStateChanged() {
                 @Override
-                public void clickedChangePlayerState(boolean isPlaying) {
+                public void changePlayerViewState(boolean isPlaying) {
                     bottomLayout.onStateChanged(isPlaying);
                 }
 
                 @Override
-                public void switchChangeViewState(int currentPosition, MusicInfo musicInfo) {
+                public void changeMusicInfoState(int currentPosition, MusicInfo musicInfo) {
                     bottomLayout.refreshView(musicInfo);
                 }
             });
