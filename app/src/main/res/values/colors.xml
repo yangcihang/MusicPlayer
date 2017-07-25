@@ -4,13 +4,15 @@
     <color name="primary">#303F9F</color>
     <color name="primary_dark">#1A237E</color>
     <color name="primary_light">#9FA8DA</color>
-    <color name="menu">#3f000000</color>
+    <color name="second_color">#3f51b5</color>
+    <color name="menu">#f1F2F3FA</color>
     <color name="menu_title">#51000000</color>
     <color name="half_transparent">#3f000000</color>
 
+    <color name="bg_activity">#F2F3FA</color>
     <color name="bg_item_pressed">#ff33b5e5</color>
 
-    <color name="bottom_color">#00000000</color>
+    <color name="bottom_color">#e5e7e5</color>
 
     <color name="accent">#1A237E</color>
     <color name="primary_text">#45485B</color>

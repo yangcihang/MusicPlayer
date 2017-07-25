@@ -50,9 +50,10 @@
         android:id="@+id/playLayout"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_centerVertical="true"
         android:layout_marginRight="12dp"
-        android:layout_toLeftOf="@id/btn_playNext">
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/btn_playNext"
+        android:layout_marginEnd="13dp">
 
         <ImageButton
             android:id="@+id/btn_pause"
@@ -81,17 +82,21 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/artist_tv2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="12sp"/>
-
-        <TextView
             android:id="@+id/txt_music_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"/>
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:textColor="@color/primary_text"/>
+
+        <TextView
+            android:id="@+id/txt_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="@color/primary_text"
+            android:textSize="12sp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -103,20 +108,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00:00"
-                android:textColor="@color/white"/>
+                android:textColor="@color/primary_text"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=" - "
-                android:textColor="@color/white"/>
+                android:textColor="@color/primary_text"/>
 
             <TextView
                 android:id="@+id/txt_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00:00"
-                android:textColor="@color/white"/>
+                android:textColor="@color/primary_text"/>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

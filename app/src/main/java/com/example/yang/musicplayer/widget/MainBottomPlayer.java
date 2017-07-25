@@ -15,6 +15,8 @@ import com.example.yang.musicplayer.constant.Constant;
 import com.example.yang.musicplayer.service.MusicPlayerService;
 import com.example.yang.musicplayer.utils.ToastUtil;
 
+import org.w3c.dom.Text;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -41,16 +43,15 @@ public class MainBottomPlayer extends RelativeLayout implements Constant {
     TextView musicNameTxt;
     @BindView(R.id.txt_duration)
     TextView durationTxt;
+    @BindView(R.id.txt_author)
+    TextView authorTxt;
 
-    private Context mcontext;
-    private Intent intent;
     private MusicPlayerService.MusicBinder musicBinder;
     public MainBottomPlayer(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mcontext = context;
         LayoutInflater.from(context).inflate(R.layout.view_bottom_player, this);
         ButterKnife.bind(this);
-        intent = new Intent(BROADCAST_NAME);
+        musicNameTxt.setSelected(true); //必须选中才有跑马灯的效果，配合xml的ellipize标签使用
     }
 
     public void setMusicBinder(MusicPlayerService.MusicBinder musicBinder) {
@@ -95,5 +96,11 @@ public class MainBottomPlayer extends RelativeLayout implements Constant {
     public void refreshView(MusicInfo musicInfo) {
         musicNameTxt.setText(musicInfo.getTitle());
         durationTxt.setText(String.valueOf(musicInfo.getDuration()));
+        if (!musicInfo.getSinger().isEmpty()) {
+            authorTxt.setText(musicInfo.getSinger());
+        } else {
+            authorTxt.setText(R.string.text_unknown);
+        }
+
     }
 }

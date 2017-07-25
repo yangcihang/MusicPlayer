@@ -165,7 +165,6 @@ public class MusicPlayerService extends Service implements Constant {
         isNotificaton = false;
     }
 
-    /*                 设置音乐播放状态            */
     private void onPlay(int position) {
         if (!isNotificaton) {
             isNotificaton = true;
@@ -197,7 +196,6 @@ public class MusicPlayerService extends Service implements Constant {
         ToastUtil.showToast("点击了暂停");
         musicController.onPause();
     }
-/* -----------------------------------------*/
 
     /**
      * 音乐接收器
